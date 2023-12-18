@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.Type;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "customer")
@@ -28,14 +31,17 @@ public class Customer implements Serializable {
     private String lastName;
     @Column(name = "email", length = 50)
     private String email;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
-    @Column(name = "active", nullable = false)
-    private boolean isActive;
+    @Column(name = "active", columnDefinition = "BIT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private Boolean isActive;
     @Column(name = "create_date", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createDate;
     @Column(name = "last_update")
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     public Short getId() {
@@ -86,11 +92,11 @@ public class Customer implements Serializable {
         this.address = address;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 

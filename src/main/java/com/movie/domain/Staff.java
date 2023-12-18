@@ -9,9 +9,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import org.hibernate.annotations.Type;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "staff")
@@ -35,8 +37,9 @@ public class Staff implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
-    @Column(name = "active", nullable = false)
-    private boolean active;
+    @Column(name = "active", columnDefinition = "BIT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private Boolean isActive;
 
     @Column(name = "username", length = 16, nullable = false)
     private String userName;
@@ -45,6 +48,7 @@ public class Staff implements Serializable {
     private String password;
 
     @Column(name = "last_update", nullable = false)
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     public Byte getId() {
@@ -103,12 +107,12 @@ public class Staff implements Serializable {
         this.store = store;
     }
 
-    public boolean isActive() {
-        return active;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public String getUserName() {
