@@ -4,42 +4,41 @@ import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 @Entity
-@Table(schema = "movie", name = "language")
-public class Language implements Serializable {
+@Table(schema = "movie", name = "country")
+public class Country implements Serializable {
     @Id
-    @Column(name = "language_id", nullable=false)
+    @Column(name = "country_id", nullable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private Short id;
 
-    @Column(columnDefinition = "char", length=20, nullable=false)
-    private String name;
+    @Column(name="country", length=50, nullable=false)
+    private String country;
 
     @Column(name = "last_update", nullable=false)
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
-    public Byte getId() {
+    public Short getId() {
         return id;
     }
 
-    public void setId(Byte id) {
+    public void setId(Short id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCountry() {
+        return country;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public LocalDateTime getLastUpdate() {
@@ -49,5 +48,4 @@ public class Language implements Serializable {
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
-
 }
