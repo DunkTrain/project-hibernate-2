@@ -5,11 +5,16 @@ import java.time.Year;
 import java.util.HashSet;
 import java.math.BigDecimal;
 import java.io.Serializable;
+
 import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.ManyToMany;
@@ -20,15 +25,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import static java.util.Objects.isNull;
+
 @Entity
 @Table(schema = "movie", name = "film")
 public class Film implements Serializable {
     @Id
-    @Column(name = "film_id", nullable=false)
+    @Column(name = "film_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
 
-    @Column(name="title", length=128, nullable=false)
+    @Column(name = "title", length = 128, nullable = false)
     private String title;
 
     @Column(columnDefinition = "text")
@@ -36,41 +43,43 @@ public class Film implements Serializable {
     private String description;
 
     @Column(name = "release_year", columnDefinition = "year")
+    // TODO: Convert create
     private Year year;
 
     @ManyToOne
-    @JoinColumn(name = "language_id", nullable=false)
+    @JoinColumn(name = "language_id", nullable = false)
     private Language language;
 
     @ManyToOne
     @JoinColumn(name = "original_language_id")
     private Language originalLanguage;
-    @Column(name = "rental_duration", nullable=false)
+    @Column(name = "rental_duration", nullable = false)
     private Byte rentalDuration;
 
-    @Column(name = "rental_rate", nullable=false)
+    @Column(name = "rental_rate", nullable = false)
     private BigDecimal rentalRate;
 
-    @Column(name="length")
+    @Column(name = "length")
     private Short length;
 
-    @Column(name = "replacement_cost", nullable=false)
+    @Column(name = "replacement_cost", nullable = false)
     private BigDecimal replacementCost;
 
     @Column(columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
+    @Convert(converter = RatingConverter.class)
     private Rating rating;
 
     @Column(name = "special_features", columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
 
-    @Column(name = "last_update", nullable=false)
+    @Column(name = "last_update", nullable = false)
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "film_actor",
-    joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
-    inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"))
+            joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"))
     private Set<Actor> actors = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -167,12 +176,26 @@ public class Film implements Serializable {
         this.rating = rating;
     }
 
-    public String getSpecialFeatures() {
-        return specialFeatures;
+    public Set<Feature> getSpecialFeatures() {
+        if(isNull(specialFeatures) || specialFeatures.isEmpty()) {
+            return null;
+        }
+        Set<Feature> result = new HashSet<>();
+        String[] features = specialFeatures.split(",");
+        for (String feature : features) {
+            result.add(Feature.getFeatureByValue(feature));
+        }
+        result.remove(null);
+        return result;
+
     }
 
-    public void setSpecialFeatures(String specialFeatures) {
-        this.specialFeatures = specialFeatures;
+    public void setSpecialFeatures(Set<Feature> features) {
+        if (isNull(features)) {
+            specialFeatures = null;
+        } else {
+            specialFeatures = features.stream().map(Feature::getValue).collect(Collectors.joining(","));
+        }
     }
 
     public LocalDateTime getLastUpdate() {

@@ -1,20 +1,11 @@
 package com.movie;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
-import com.movie.domain.City;
-import com.movie.domain.Film;
-import com.movie.domain.Actor;
-import com.movie.domain.Staff;
-import com.movie.domain.Store;
-import com.movie.domain.Rental;
-import com.movie.domain.Payment;
-import com.movie.domain.Address;
-import com.movie.domain.Country;
-import com.movie.domain.Category;
-import com.movie.domain.Language;
-import com.movie.domain.Customer;
-import com.movie.domain.FilmText;
-import com.movie.domain.Inventory;
+
+import com.movie.dao.*;
+import com.movie.domain.*;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.Configuration;
@@ -22,6 +13,20 @@ import org.hibernate.cfg.Configuration;
 public class Main {
 
     private final SessionFactory sessionFactory;
+    private final ActorDAO actorDAO;
+    private final AddressDAO addressDAO;
+    private final CategoryDAO categoryDAO;
+    private final CityDAO cityDAO;
+    private final CountryDAO countryDAO;
+    private final CustomerDAO customerDAO;
+    private final FilmDAO filmDAO;
+    private final FilmTextDAO filmTextDAO;
+    private final InventoryDAO inventoryDAO;
+    private final LanguageDAO languageDAO;
+    private final PaymentDAO paymentDAO;
+    private final RentalDAO rentalDAO;
+    private final StaffDAO staffDAO;
+    private final StoreDAO storeDAO;
 
     public Main() {
         Properties properties = new Properties();
@@ -50,8 +55,64 @@ public class Main {
                 .addAnnotatedClass(Store.class)
                 .addProperties(properties)
                 .buildSessionFactory();
+
+        actorDAO = new ActorDAO(sessionFactory);
+        addressDAO = new AddressDAO(sessionFactory);
+        categoryDAO = new CategoryDAO(sessionFactory);
+        cityDAO = new CityDAO(sessionFactory);
+        countryDAO = new CountryDAO(sessionFactory);
+        customerDAO = new CustomerDAO(sessionFactory);
+        filmDAO = new FilmDAO(sessionFactory);
+        filmTextDAO = new FilmTextDAO(sessionFactory);
+        inventoryDAO = new InventoryDAO(sessionFactory);
+        languageDAO = new LanguageDAO(sessionFactory);
+        paymentDAO = new PaymentDAO(sessionFactory);
+        rentalDAO = new RentalDAO(sessionFactory);
+        staffDAO = new StaffDAO(sessionFactory);
+        storeDAO = new StoreDAO(sessionFactory);
     }
+
     public static void main(String[] args) {
         Main main = new Main();
+        Customer customer = main.createCustomer();
+
+        main.customerReturnInventoryToStore();
+    }
+
+    private void customerReturnInventoryToStore() {
+        try(Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+
+            Rental rental = rentalDAO.getAnyUnreturnedRental();
+            rental.setRentalDate(LocalDateTime.now());
+            rentalDAO.save(rental);
+            session.getTransaction().commit();
+        }
+    }
+
+    private Customer createCustomer() {
+        try(Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Store store = storeDAO.getItems(0,1).get(0);
+            City city = cityDAO.getByName("Kragujevac");
+            Address address = new Address();
+            address.setAddress("Indep str, 48");
+            address.setPhone("999-111-555");
+            address.setCity(city);
+            address.setDistrict("strangeSomething");
+            addressDAO.save(address);
+
+            Customer customer = new Customer();
+            customer.setActive(true);
+            customer.setEmail("test@gmail.com");
+            customer.setAddress(address);
+            customer.setStore(store);
+            customer.setFirstName("Dmitry");
+            customer.setLastName("DSH");
+            customerDAO.save(customer);
+
+            session.getTransaction().commit();
+            return customer;
+        }
     }
 }
