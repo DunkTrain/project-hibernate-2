@@ -1,7 +1,6 @@
 package com.movie.dao;
 
 import java.util.List;
-
 import org.hibernate.Session;
 import jakarta.persistence.Query;
 import org.hibernate.SessionFactory;

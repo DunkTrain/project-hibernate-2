@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -12,16 +11,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "country")
-public class Country implements Serializable {
+public class Country {
     @Id
-    @Column(name = "country_id", nullable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "country_id")
     private Short id;
 
-    @Column(name="country", length=50, nullable=false)
-    private String country;
+    @Column(name = "country", length = 50)
+    private String countryName;
 
-    @Column(name = "last_update", nullable=false)
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
@@ -33,12 +32,12 @@ public class Country implements Serializable {
         this.id = id;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
     public LocalDateTime getLastUpdate() {

@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -10,34 +9,36 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "rental")
-public class Rental implements Serializable {
+public class Rental {
     @Id
-    @Column(name = "rental_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rental_id")
     private Integer id;
 
-    @Column(name = "rental_date", nullable = false)
+    @Column(name = "rental_date")
     private LocalDateTime rentalDate;
 
     @ManyToOne
-    @JoinColumn(name = "inventory_id", nullable = false)
+    @JoinColumn(name = "inventory_id")
     private Inventory inventory;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Column(name = "return_date")
     private LocalDateTime returnDate;
 
     @ManyToOne
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id")
     private Staff staff;
 
-    @Column(name = "last_update", nullable = false)
+    @Column(name = "last_update")
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     public Integer getId() {

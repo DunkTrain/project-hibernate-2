@@ -4,89 +4,84 @@ import java.util.Set;
 import java.time.Year;
 import java.util.HashSet;
 import java.math.BigDecimal;
-import java.io.Serializable;
-
 import jakarta.persistence.Id;
-
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
-
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
+import java.util.stream.Collectors;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import org.hibernate.annotations.Type;
-import jakarta.persistence.CascadeType;
+import static java.util.Objects.isNull;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static java.util.Objects.isNull;
-
 @Entity
 @Table(schema = "movie", name = "film")
-public class Film implements Serializable {
+public class Film {
     @Id
-    @Column(name = "film_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "film_id")
     private Short id;
 
-    @Column(name = "title", length = 128, nullable = false)
+    @Column(name = "title", length = 128)
     private String title;
 
-    @Column(columnDefinition = "text")
+    @Column(name = "description", columnDefinition = "text")
     @Type(type = "text")
     private String description;
 
     @Column(name = "release_year", columnDefinition = "year")
-    // TODO: Convert create
+    @Convert(converter = YearAttributeConverter.class)
     private Year year;
 
     @ManyToOne
-    @JoinColumn(name = "language_id", nullable = false)
+    @JoinColumn(name = "language_id")
     private Language language;
 
     @ManyToOne
     @JoinColumn(name = "original_language_id")
     private Language originalLanguage;
-    @Column(name = "rental_duration", nullable = false)
+
+    @Column(name = "rental_duration")
     private Byte rentalDuration;
 
-    @Column(name = "rental_rate", nullable = false)
+    @Column(name = "rental_rate")
     private BigDecimal rentalRate;
 
     @Column(name = "length")
     private Short length;
 
-    @Column(name = "replacement_cost", nullable = false)
+    @Column(name = "replacement_cost")
     private BigDecimal replacementCost;
 
-    @Column(columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
+    @Column(name = "rating", columnDefinition = "enum('G', 'PG', 'PG-13', 'R', 'NC-17')")
     @Convert(converter = RatingConverter.class)
     private Rating rating;
 
     @Column(name = "special_features", columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
 
-    @Column(name = "last_update", nullable = false)
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "film_actor",
             joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"))
-    private Set<Actor> actors = new HashSet<>();
+    private Set<Actor> actors;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "film_category",
             joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    private Set<Category> categories;
 
     public Short getId() {
         return id;

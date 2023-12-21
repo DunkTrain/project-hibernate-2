@@ -1,13 +1,13 @@
 package com.movie.domain;
 
-import static java.util.Objects.isNull;
+import java.util.Objects;
 
 public enum Feature {
-
     TRAILERS("Trailers"),
-    Commentaries("Commentaries"),
+    COMMENTARIES("Commentaries"),
     DELETED_SCENES("Deleted Scenes"),
     BEHIND_THE_SCENES("Behind the Scenes");
+
     private final String value;
 
     Feature(String value) {
@@ -19,13 +19,12 @@ public enum Feature {
     }
 
     public static Feature getFeatureByValue(String value) {
-        if(isNull(value) || value.isEmpty()) {
+        if (Objects.isNull(value) || value.isEmpty()) {
             return null;
         }
-
         Feature[] features = Feature.values();
-        for(Feature feature : features) {
-            if(feature.value.equals(value)) {
+        for (Feature feature : features) {
+            if (feature.getValue().equals(value)) {
                 return feature;
             }
         }

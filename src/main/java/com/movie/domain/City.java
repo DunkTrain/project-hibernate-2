@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -8,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,20 +15,20 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "city")
-public class City implements Serializable {
+public class City {
     @Id
-    @Column(name = "city_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city_id")
     private Short id;
 
-    @Column(name="city", length=50, nullable=false)
+    @Column(name = "city", length = 50)
     private String city;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", nullable=false)
+    @ManyToOne
+    @JoinColumn(name = "country_id")
     private Country country;
 
-    @Column(name = "last_update", nullable=false)
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
@@ -42,12 +40,12 @@ public class City implements Serializable {
         this.id = id;
     }
 
-    public String getCity() {
+    public String getCityName() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setCityName(String cityName) {
+        this.city = cityName;
     }
 
     public Country getCountry() {

@@ -1,8 +1,6 @@
 package com.movie.domain;
 
 import java.util.Set;
-import java.util.HashSet;
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -11,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -19,27 +16,27 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "actor")
-public class Actor implements Serializable {
+public class Actor {
     @Id
-    @Column(name = "actor_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "actor_id")
     private Short id;
 
-    @Column(name = "first_name", length = 45, nullable = false)
+    @Column(name = "first_name", length = 45)
     private String firstName;
 
-    @Column(name = "last_name", length = 45, nullable = false)
-    private String latName;
+    @Column(name = "last_name", length = 45)
+    private String lastName;
 
-    @Column(name = "last_update", nullable = false)
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "film_actor",
             joinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"))
-    private Set<Film> films = new HashSet<>();
+    private Set<Film> films;
 
     public Short getId() {
         return id;
@@ -57,12 +54,12 @@ public class Actor implements Serializable {
         this.firstName = firstName;
     }
 
-    public String getLatName() {
-        return latName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLatName(String latName) {
-        this.latName = latName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public LocalDateTime getLastUpdate() {

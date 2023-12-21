@@ -2,8 +2,6 @@ package com.movie.domain;
 
 
 import java.util.Set;
-import java.util.HashSet;
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -12,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,24 +17,24 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "category")
-public class Category implements Serializable {
+public class Category {
     @Id
-    @Column(name = "category_id", nullable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Byte id;
 
-    @Column(name="name", length=25, nullable=false)
+    @Column(name = "name", length = 25)
     private String name;
 
-    @Column(name="last_update", nullable=false)
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "film_category",
             joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"))
-    private Set<Film> films = new HashSet<>();
+    private Set<Film> films;
 
     public Byte getId() {
         return id;
@@ -71,4 +68,3 @@ public class Category implements Serializable {
         this.films = films;
     }
 }
-

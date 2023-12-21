@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -10,24 +9,26 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "store")
-public class Store implements Serializable {
+public class Store {
     @Id
-    @Column(name = "store_id", nullable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "store_id")
     private Byte id;
 
     @OneToOne
-    @JoinColumn(name = "manager_staff_id", nullable=false)
+    @JoinColumn(name = "manager_staff_id")
     private Staff staff;
 
     @OneToOne
-    @JoinColumn(name = "address_id", nullable=false)
+    @JoinColumn(name = "address_id")
     private Address address;
 
-    @Column(name="last_update", nullable=false)
+    @Column(name = "last_update")
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     public Byte getId() {

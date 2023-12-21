@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
@@ -11,7 +10,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(schema = "movie", name = "film_text")
-public class FilmText implements Serializable {
+public class FilmText {
     @Id
     @Column(name = "film_id")
     private Short id;
@@ -20,10 +19,10 @@ public class FilmText implements Serializable {
     @JoinColumn(name = "film_id")
     private Film film;
 
-    @Column(name="title", nullable=false)
+    @Column(name = "title")
     private String title;
 
-    @Column(columnDefinition = "text")
+    @Column(name = "description", columnDefinition = "text")
     @Type(type = "text")
     private String description;
 

@@ -1,6 +1,5 @@
 package com.movie.domain;
 
-import java.io.Serializable;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import jakarta.persistence.Table;
@@ -8,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,31 +14,32 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(schema = "movie", name = "address")
-public class Address implements Serializable {
+public class Address {
     @Id
-    @Column(name = "address_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "address_id")
     private Short id;
 
-    @Column(name = "address", length = 50, nullable = false)
+    @Column(name = "address", length = 50)
     private String address;
 
     @Column(name = "address2", length = 50)
     private String address2;
 
-    @Column(name="district", length=20, nullable=false)
+    @Column(name = "district", length = 20)
     private String district;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "city_id", nullable=false)
+    @ManyToOne
+    @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(name = "postal_code", length=10)
+    @Column(name = "postal_code", length = 10)
     private String postalCode;
 
-    @Column(name="phone", length=20, nullable=false)
+    @Column(name = "phone", length = 20)
     private String phone;
-    @Column(name="last_update", nullable=false)
+
+    @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
